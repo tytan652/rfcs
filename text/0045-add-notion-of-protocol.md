@@ -55,6 +55,7 @@ Rather than adding a getter for each possible info. A getter where we can chooos
 
 Adding to Services API:
 - `const char *(*get_connect_info)(uint32_t type, void *data)` where `type` is an integer indicating which info we want and return `NULL` if it doesn't have it.
+- `bool (*can_try_to_connect)(void *data)`, since protocols and services do not always require the same informations. This function allows the service to return if it can connect. Returns true if not implemented.
 - Each type will be define by a macro and a even number, odd number will be reserved for future third-party protocol.
 - `obs_service_get_url`, `obs_service_get_key`, `obs_service_get_username` and `obs_service_get_password` will be deprecated in favor of `obs_service_get_info`.
 
