@@ -45,6 +45,31 @@ Adding to `obs_service_info`:
 - `const char **(*get_supported_video_codecs)(void *data)`: video codecs supported by the service. Optional, fallback to protocol supported codecs if not set.
 - `const char **(*get_supported_audio_codecs)(void *data)`: audio codecs supported by the service. Optional, fallback to protocol supported codecs if not set.
 
+### Services and information
+
+Dependending on the protocol, service should provide various information (e.g. server URL, stream key, username, password).
+
+So as it si now, `get_key` can provide a stream id (SRT) or an encryption passphrase (RIST) rather than a stream key.
+
+Rather than adding a getter for each possible info. A getter where we can chooose which info we want should be considered.
+
+Adding to Services API:
+- `const char *(*get_connect_info)(uint32_t type, void *data)` where `type` is an integer indicating which info we want and return `NULL` if it doesn't have it.
+- Each type will be define by a macro and a even number, odd number will be reserved for future third-party protocol.
+- `obs_service_get_url`, `obs_service_get_key`, `obs_service_get_username` and `obs_service_get_password` will be deprecated in favor of `obs_service_get_info`.
+
+List of types:
+```c
+#define OBS_SERVICE_INFO_SERVER_URL 0
+#define OBS_SERVICE_INFO_STREAM_KEY 2
+#define OBS_SERVICE_INFO_USERNAME 4 
+#define OBS_SERVICE_INFO_PASSWORD 6
+#define OBS_SERVICE_INFO_STREAM_ID 8
+#define OBS_SERVICE_INFO_ENCRYPT_PASSPHRASE 10
+```
+
+So if one day, we have a protocol that don't use a server URL, this scenario can be covered.
+
 ### About `rtmp-services`
 
 This plugin will:
