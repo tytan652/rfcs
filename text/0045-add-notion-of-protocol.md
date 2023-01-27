@@ -1,5 +1,5 @@
 # Summary
-- Add notion of service protocol in libobs and OBS Studio
+- Define supported protocols for services and outputs in libobs and OBS Studio
 - Outputs for streaming are registered with one or more compatible protocols and codecs
 - Only codecs compatible with the output and the service are shown
 - Audio codec can be chosen if various compatible, the encoder implementation can be chosen in advanced output mode.
@@ -109,7 +109,7 @@ This plugin will:
 - Services that use a protocol that is not registered will not be shown. e.g. OBS Studio without RTMPS support will not show services and servers that rely on RTMPS.
 - Codecs field for audio and video will be added to allow services to limit which codec is compatible with the service.
 - `"output"` field in the `"recommended"` object will be deprecated, but it will be kept for backward compatibility. `const char *(*get_output_type)(void *data)` in `obs_service_info` will be no longer used by `rtmp-services`.
-  - The JSON schema will be improved to require `"protocol"` when the protocol is not auto-detectable. The same for `"output"` to keep backward compatibility.
+  - The JSON schema will be improved to require the `"protocol"`field when the protocol is not auto-detectable. The same for the `"output"` field to keep backward compatibility.
 
 ## UI
 
