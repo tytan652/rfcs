@@ -114,11 +114,10 @@ This plugin will:
 ## UI
 
 ### Audio encoders
-If the service/output is compatible with various audio encoders, the user should be able to choose in the UI which one.
 
-For AAC in simple mode, the will have only one AAC option.
-In advanced mode the user could choose between various AAC implementation.
-
+If the service/output is compatible with various audio codecs, the user should be able to choose in the UI which one:
+- In simple mode, the user will be able to chose the codec (AAC or Opus).
+- In advanced mode, the user will be able to chose a specific encoder.
 
 ### Settings loading order
 
