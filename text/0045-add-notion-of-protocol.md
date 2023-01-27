@@ -39,7 +39,7 @@ Adding to the API these functions:
 ### About protocols
 RTMP and RTMPS will only be compatible only with H264 and AAC.
 
-HLS will have no prefix set and not "auto-detectable", HLS relies on HTTP/HTTPS and it is not the only one in this case.
+HLS will have no prefix, HLS relies on HTTP/HTTPS and it is not the only one in this case. Since it has no prefix, HLS is not be auto-detectable in the custom field.
 
 HLS, SRT, and RIST are codec agnostic since they use MPEG/TS container but require some set up depending on the codec.
 
