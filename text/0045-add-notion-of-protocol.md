@@ -109,7 +109,7 @@ This plugin will:
 - Services that ask for a protocol that is not registered will not be shown.
 - Codecs field for audio and video will be added to allow services to limit which codec is compatible with the service.
 - `"output"` field in the `"recommended"` object will be deprecated, but it will be kept for backward compatibility. `const char *(*get_output_type)(void *data)` in `obs_service_info` will be no longer used by `rtmp-services`.
-    - It will be required through the JSON Schema if protocol different from RTMP(S) is set to avoid breakage of the backward compatibility.
+  - The JSON schema will be improved to require `"protocol"` when the protocol is not auto-detectable. The same for `"output"` to keep backward compatibility.
 
 ## UI
 
