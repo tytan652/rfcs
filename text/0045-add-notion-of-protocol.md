@@ -1,12 +1,12 @@
 # Summary
 - Add notion of service protocol in libobs and OBS Studio
-- Outputs for streaming are registered with their compatible protocol and codecs
+- Outputs for streaming are registered with one or more compatible protocols and codecs
 - Only codecs compatible with the output and the service are shown
-- Audio encoder can be choosen if various compatible
+- Audio encoder can be chosen if various compatible
 - Will be extended with RFC 39
 
 # Motivation
-Create a better management of outputs, encoders and services with an approach focused on protocols.
+Create a better management of outputs, encoders, and services with an approach focused on protocols.
 
 # Design
 
@@ -21,7 +21,7 @@ Adding to `obs_output_info`:
   - Meant to be used for protocol auto-detection.
   - While registering if present, the number of prefix shall be less or equal to the number of protocols.
 
-Asside the getter for protocol attribute, adding to the API those functions:
+Asside from getters for protocol related attributes, adding to the API these functions:
 - `bool obs_output_is_protocol_registered(const char *protocol)`: return true if an output with the protocol is registered.
 - `const char *obs_output_get_prefix_protocol(const char *prefix)`: return the protocol bound to the prefix.
 - `bool obs_enum_output_service_types(const char *protocol, size_t idx, const char **id)`: enumerate all outputs types compatible with the given protocol.
@@ -29,16 +29,16 @@ Asside the getter for protocol attribute, adding to the API those functions:
 - `bool obs_enum_output_protocols(size_t idx, const char **prefix)`: enumerate all registered protocol.
 
 ### About protocols
-RTMP and RTMPS will on be considered compatible only with H264 and AAC.
+RTMP and RTMPS will only be compatible only with H264 and AAC.
 
 HLS will have no prefix set and not "auto-detectable".
 
-HLS, SRT and RIST are codec agnostic since they use MPEG/TS container but require some set up depending on the codec.
+HLS, SRT, and RIST are codec agnostic since they use MPEG/TS container but require some set up depending on the codec.
 
-FTL will be considered compatible only with H264 and opus because of the deprecation of the protocol in OBS Studio.
+FTL will only be compatible only with H264 and Opus because of the deprecation of the protocol in OBS Studio.
 
 ## Services API
-Since a streaming service may not accept all the codec usable by a protocol, adding a way to set supported codecs is required.
+Since a streaming service may not accept all the codecs usable by a protocol, adding a way to set supported codecs is required.
 
 Adding to `obs_service_info`:
 - `const char *(*get_protocols)(void *data)`: return the protocol used by the service. It will allow multi-protocol services in the future.
@@ -47,16 +47,16 @@ Adding to `obs_service_info`:
 
 ### Services and information
 
-Dependending on the protocol, service should provide various information (e.g. server URL, stream key, username, password).
+Depending on the protocol, the service should provide various types of connection details (e.g. server URL, stream key, username, password).
 
-So as it si now, `get_key` can provide a stream id (SRT) or an encryption passphrase (RIST) rather than a stream key.
+Currently, `get_key` can provide a stream id (SRT) or an encryption passphrase (RIST) rather than a stream key.
 
-Rather than adding a getter for each possible info. A getter where we can chooose which info we want should be considered.
+Rather than adding a getter for each possible type of information, a getter where we can choose which type of information we want should be implemented.
 
 Adding to Services API:
 - `const char *(*get_connect_info)(uint32_t type, void *data)` where `type` is an integer indicating which info we want and return `NULL` if it doesn't have it.
 - `bool (*can_try_to_connect)(void *data)`, since protocols and services do not always require the same informations. This function allows the service to return if it can connect. Returns true if not implemented.
-- Each type will be define by a macro and a even number, odd number will be reserved for future third-party protocol.
+- Each types of connection details will be define by a macro and an even number, odd number will be reserved for future third-party protocol.
 - `obs_service_get_url`, `obs_service_get_key`, `obs_service_get_username` and `obs_service_get_password` will be deprecated in favor of `obs_service_get_info`.
 
 List of types:
@@ -69,7 +69,7 @@ List of types:
 #define OBS_SERVICE_INFO_ENCRYPT_PASSPHRASE 10
 ```
 
-So if one day, we have a protocol that don't use a server URL, this scenario can be covered.
+In the future, if we want to support a protocol that doesn't use a server URL, this scenario is covered by this design.
 
 ### About `rtmp-services`
 
@@ -101,16 +101,18 @@ Service settings need to be loaded first and output ones afterward to show only 
 - Codecs field for audio and video will be added to enable services to allow some of codec compatible with the protocol.
 
 ### Service and Output settings interactions
-NOTE: Since Services API is not usable by third-party for now. The scenario where there is no simple encoder preset for the service does not need to be considered for now.
 
-Changing protocol by changing the service should update the Output page with only compatible encoders.
+NOTE: Since Services API is not usable by third-party for now, this RFC will not consider a scenario where there is no simple encoder preset for the service.
 
-If the actual codec is not supported by the service, the codec will be changed and the user warned about the change.
+If changing the service results in the selected protocol changing, the Output page should be updated to list only compatible encoders.
 
-## What if there is various registered outputs for one protocol ?
+If the currently selected encoder (codec) is not supported by the service, the encoder will be changed and the user will be notified about the change.
+
+## What if there are various registered outputs for one protocol ?
 
 The improbable situation where a plugin register a output for an already registered protocol could happen, so managing this possibility is required.
 
-- In `obs_service_info`: a `const char *(*get_preferred_output_type)(void *data)` will replace `const char *(*get_output_type)(void *data)`.
-- A function in the UI to preffer first-party outputs will be considered.
+- In `obs_service_info`:
+- A `const char *(*get_preferred_output_type)(void *data)` will replace `const char *(*get_output_type)(void *data)`.
+- A function in the UI to prefer first-party outputs will be considered.
 - An option in advanced output to allow to choose an output type will not be considered for now.
