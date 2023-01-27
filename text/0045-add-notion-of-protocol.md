@@ -103,8 +103,8 @@ This plugin will:
 
 #### About service JSON file
 
-- A field `"protocol"` will be added mostly for HLS/FTL services, other protocol can be detected through prefixes, further changes will be done in RFC 39.
-  - Services still mono-protocol, RTMP+RTMPS combo when the field is not set is the only exception.
+- For `services` objects, a `"protocol"` field will be added. This will be used to indicate the protocol for services that use HLS or FTL. Other protocols can be detected through prefixes. Further changes will be done in RFC 39.
+  - `services` objects are mono-protocol, services with no `"protocol"` field that provides RTMP and RTMPS servers are the only exceptions.
   - RTMP services with custom code and HTTP(S) URLs will have the protocol enforced to RTMP.
 - Services that ask for a protocol that is not registered will not be shown.
 - Codecs field for audio and video will be added to allow services to limit which codec is compatible with the service.
