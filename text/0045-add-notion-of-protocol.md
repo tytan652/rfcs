@@ -89,7 +89,7 @@ Adding to the API these functions:
   - return true if `bool (*can_try_to_connect)(void *data)` is not implemented in the service.
   - return false if the service object is invalid.
 
-And `obs_service_get_url()`, `obs_service_get_key()`, `obs_service_get_username()` and `obs_service_get_password()` will be deprecated in favor of `obs_service_get_connect_info()`.
+`obs_service_get_url()`, `obs_service_get_key()`, `obs_service_get_username()`, and `obs_service_get_password()` will be deprecated in favor of `obs_service_get_connect_info()`.
 
 In the future, if we want to support a protocol that doesn't use a server URL, this scenario is covered by this design.
 
