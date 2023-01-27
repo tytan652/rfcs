@@ -66,7 +66,7 @@ Currently, `get_key` can provide a stream id (SRT) or an encryption passphrase (
 
 Rather than adding a getter for each possible type of information, a getter where we can choose which type of information we want should be implemented.
 
-Each types of connection details will be define by a macro and an even number, odd number will be reserved for potential third-party protocol (RFC 39).
+Each types of connection details will be define by a macro with an even number, odd number will be reserved for potential third-party protocol (RFC 39).
 
 List of types:
 ```c
@@ -79,11 +79,11 @@ List of types:
 ```
 
 Adding to `obs_service_info`:
-- `const char *(*get_connect_info)(uint32_t type, void *data)` where `type` is an integer indicating which info we want and return `NULL` if it doesn't have it.
+- `const char *(*get_connect_info)(uint32_t type, void *data)` where `type` is one of the value of the list above indicating which info we want and return `NULL` if it doesn't have it.
 - `bool (*can_try_to_connect)(void *data)`, since protocols and services do not always require the same informations. This function allows the service to return if it can connect. Return true if the the service has all it needs to connect.
 
 Adding to the API these functions:
-- `const char *obs_service_get_connect_info(uint32_t type, const obs_service_t *service)`: return the connection information related to the given type.
+- `const char *obs_service_get_connect_info(uint32_t type, const obs_service_t *service)`: return the connection information related to the given type (list above).
 - `bool obs_service_can_try_to_connect(const obs_service_t *service)`: return if the service can try to connect.
   - return `bool (*can_try_to_connect)(void *data)` result.
   - return true if `bool (*can_try_to_connect)(void *data)` is not implemented in the service.
