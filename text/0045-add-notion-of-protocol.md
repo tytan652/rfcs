@@ -16,12 +16,13 @@ Only outputs with the `OBS_OUTPUT_SERVICE` flag are concerned.
 Adding to `obs_output_info`:
 - `const char *protocols`: protocols separated with a semi-colon (ex: `"RTMP;RTMPS"`), required to register the output.
 - `const char *protocols_prefixes`: URL protocols prefixes separated with a semi-colon `"rtmp://;rtmps://"`, optional.
-  - Only one prefix per protocol in `protocols`.
-  - Those prefixes should be in the same order as `protocols`.
-  - Meant to be used for protocol auto-detection.
-  - While registering if present, the number of prefix shall be less or equal to the number of protocols.
-  - NOTE: Prefixes (URI scheme + `://`) are prefered over URI schemes to avoid:
-    - matching links without schemes (e.g. "rtmp.example.com").
+  - Up to one URL prefix per protocol in `protocols`.
+  - Those URL prefixes must be in the same order as `protocols`.
+  - Each URL prefix must be unique to the protocol
+  - Meant to be used for protocol auto-detection on server URL.
+  - While registering if present, the number of URL prefix must be less or equal to the number of protocols.
+  - NOTE: URL prefixes (URI scheme + `://`) are prefered over URI schemes to avoid:
+    - matching links without prefixes (e.g. "rtmp.example.com").
     - adding `://` each time that a auto-detection is done.
 
 Adding to the API these functions:
@@ -92,9 +93,8 @@ In the future, if we want to support a protocol that doesn't use a server URL, t
 
 `rtmp-services` is a plugin that provides two services `rtmp_common` and `rtmp_custom`. The use of "rtmp" in the naming no longer means that it only supports RTMP, it was and is kept to avoid breakage.
 
-This plugin will:
-- for `rtmp_common` services will to at least support H264 as video codec, AAC or Opus as audio codec. This is a limitation required by the simple output mode.
-- for `rtmp_custom` it will depends on the auto-detected protocol.
+- In `rtmp_common`, services must at least support H264 as video codec and AAC or Opus as audio codec. This is a limitation required by the simple output mode.
+- The service `rtmp_custom` will depend on protocol prefixes from outputs types to detect which protocol is in use.
 
 #### About service JSON file
 
@@ -107,6 +107,12 @@ This plugin will:
   - The JSON schema will be modified to require the `"protocol"`field when the protocol is not auto-detectable. The same for the `"output"` field to keep backward compatibility.
 
 ## UI
+
+### Custom server protocol auto-detection
+
+The user can set a custom server through the service "Custom…", the protocol will be deduced based on URL prefixes from service outputs and default to RTMP if no matches.
+
+NOTE: Allowing the user to manually choose the protocol (e.g. HLS) is part of RFC 39.
 
 ### Audio encoders
 
