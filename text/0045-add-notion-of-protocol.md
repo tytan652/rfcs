@@ -24,8 +24,6 @@ Adding to `obs_output_info`:
     - matching links without schemes (e.g. "rtmp.example.com").
     - adding `://` each time that a auto-detection is done.
 
-
-
 Adding to the API these functions:
 - `const char *obs_output_get_protocols(const obs_output_t *output)`: returns protocols supported by the output.
 - `bool obs_output_is_protocol_registered(const char *protocol)`: return true if an output with the protocol is registered.
@@ -55,10 +53,10 @@ Adding to `obs_service_info`:
 
 Adding to the API these functions:
 - `const char *obs_service_get_protocol(const obs_service_t *service)`: return the protocol used by the service.
-- `obs_service_get_supported_video_codecs(const obs_service_t *service)`: return video codecs compatible with the service.
-- `obs_service_get_supported_audio_codecs(const obs_service_t *service)`: return audio codecs compatible with the service.
+- `const char **obs_service_get_supported_video_codecs(const obs_service_t *service)`: return video codecs compatible with the service.
+- `const char **obs_service_get_supported_audio_codecs(const obs_service_t *service)`: return audio codecs compatible with the service.
 
-### Services and information
+### Services and connection informations
 
 Depending on the protocol, the service should provide various types of connection details (e.g. server URL, stream key, username, password).
 
@@ -66,7 +64,7 @@ Currently, `get_key` can provide a stream id (SRT) or an encryption passphrase (
 
 Rather than adding a getter for each possible type of information, a getter where we can choose which type of information we want should be implemented.
 
-Each types of connection details will be define by a macro with an even number, odd number will be reserved for potential third-party protocol (RFC 39).
+Each type of connection details will be defined by a macro with an even number value. Odd number values will be reserved for potential third-party protocols (RFC 39).
 
 List of types:
 ```c
@@ -95,7 +93,7 @@ In the future, if we want to support a protocol that doesn't use a server URL, t
 
 ### About `rtmp-services`
 
-`rtmp-services` is plugin that provides two services `rtmp_common` and `rtmp_custom`. The use of "rtmp" in the naming no longer means that it only supports RTMP, it was and is kept to avoid breakage.
+`rtmp-services` is a plugin that provides two services `rtmp_common` and `rtmp_custom`. The use of "rtmp" in the naming no longer means that it only supports RTMP, it was and is kept to avoid breakage.
 
 This plugin will:
 - for `rtmp_common` services will to at least support H264 as video codec, AAC or Opus as audio codec. This is a limitation required by the simple output mode.
@@ -109,15 +107,15 @@ This plugin will:
 - Services that use a protocol that is not registered will not be shown. e.g. OBS Studio without RTMPS support will not show services and servers that rely on RTMPS.
 - Codecs field for audio and video will be added to allow services to limit which codec is compatible with the service.
 - `"output"` field in the `"recommended"` object will be deprecated, but it will be kept for backward compatibility. `const char *(*get_output_type)(void *data)` in `obs_service_info` will be no longer used by `rtmp-services`.
-  - The JSON schema will be improved to require the `"protocol"`field when the protocol is not auto-detectable. The same for the `"output"` field to keep backward compatibility.
+  - The JSON schema will be modified to require the `"protocol"`field when the protocol is not auto-detectable. The same for the `"output"` field to keep backward compatibility.
 
 ## UI
 
 ### Audio encoders
 
-If the service/output is compatible with various audio codecs, the user should be able to choose in the UI which one:
-- In simple mode, the user will be able to chose the codec (AAC or Opus).
-- In advanced mode, the user will be able to chose a specific encoder.
+If the service/output is compatible with more than one audio codec, the user should be able to choose in the UI which one:
+- In simple mode, the user will be able to choose the codec (AAC or Opus).
+- In advanced mode, the user will be able to choose a specific encoder.
 
 ### Settings loading order
 
