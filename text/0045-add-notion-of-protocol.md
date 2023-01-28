@@ -2,7 +2,7 @@
 - Define supported protocols for services and outputs in libobs and OBS Studio
 - Outputs for streaming are registered with one or more compatible protocols and codecs
 - Only codecs compatible with the output and the service are shown
-- Audio codec can be chosen if various compatible, the encoder implementation can be chosen in advanced output mode.
+- Audio codec can be chosen if various compatible, codec in simple mode and encoder advanced output mode.
 - Will be extended with RFC 39
 
 # Motivation
