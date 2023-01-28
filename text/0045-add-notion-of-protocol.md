@@ -25,7 +25,7 @@ Adding to `obs_output_info`:
     - matching links without prefixes (e.g. "rtmp.example.com").
     - adding `://` each time that a auto-detection is done.
 
-Adding to the API these functions:
+Adding to this API these functions:
 - `const char *obs_output_get_protocols(const obs_output_t *output)`: returns protocols supported by the output.
 - `bool obs_output_is_protocol_registered(const char *protocol)`: return true if an output with the protocol is registered.
 - `const char *obs_output_get_prefix_protocol(const char *prefix)`: return the protocol bound to the prefix.
@@ -49,7 +49,7 @@ Adding to `obs_service_info`:
 - `const char **(*get_supported_video_codecs)(void *data)`: video codecs supported by the service. Optional, fallback to protocol supported codecs if not set.
 - `const char **(*get_supported_audio_codecs)(void *data)`: audio codecs supported by the service. Optional, fallback to protocol supported codecs if not set.
 
-Adding to the API these functions:
+Adding to this API these functions:
 - `const char *obs_service_get_protocol(const obs_service_t *service)`: return the protocol used by the service.
 - `const char **obs_service_get_supported_video_codecs(const obs_service_t *service)`: return video codecs compatible with the service.
 - `const char **obs_service_get_supported_audio_codecs(const obs_service_t *service)`: return audio codecs compatible with the service.
@@ -76,9 +76,9 @@ List of types:
 
 Adding to `obs_service_info`:
 - `const char *(*get_connect_info)(uint32_t type, void *data)` where `type` is one of the value of the list above indicating which info we want and return `NULL` if it doesn't have it.
-- `bool (*can_try_to_connect)(void *data)`, since protocols and services do not always require the same informations. This function allows the service to return if it can connect. Return true if the the service has all it needs to connect.
+- `bool (*can_try_to_connect)(void *data)`, since protocols and services do not always require the same information. This function allows the service to return if it can connect. Return true if the the service has all it needs to connect.
 
-Adding to the API these functions:
+Adding these functions to the Services API:
 - `const char *obs_service_get_connect_info(uint32_t type, const obs_service_t *service)`: return the connection information related to the given type (list above).
 - `bool obs_service_can_try_to_connect(const obs_service_t *service)`: return if the service can try to connect.
   - return `bool (*can_try_to_connect)(void *data)` result.
