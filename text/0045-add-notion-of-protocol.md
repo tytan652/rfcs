@@ -56,7 +56,7 @@ Adding to this API these functions:
 
 ### Services and connection informations
 
-Depending on the protocol, the service should provide various types of connection details (e.g. server URL, stream key, username, password).
+Depending on the protocol, the service object should provide various types of connection details (e.g. server URL, stream key, username, password).
 
 Currently, `get_key` can provide a stream id (SRT) or an encryption passphrase (RIST) rather than a stream key.
 
@@ -83,7 +83,7 @@ Adding these functions to the Services API:
 - `bool obs_service_can_try_to_connect(const obs_service_t *service)`: return if the service can try to connect.
   - return `bool (*can_try_to_connect)(void *data)` result.
   - return true if `bool (*can_try_to_connect)(void *data)` is not implemented in the service.
-  - return false if the service object is invalid.
+  - return false if the service object is `NULL`.
 
 `obs_service_get_url()`, `obs_service_get_key()`, `obs_service_get_username()`, and `obs_service_get_password()` will be deprecated in favor of `obs_service_get_connect_info()`.
 
