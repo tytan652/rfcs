@@ -35,13 +35,10 @@ Adding to the API these functions:
 - `const char *obs_get_output_supported_audio_codecs(const char *id)`: return compatible audio codecs of the given output id.
 
 ### About protocols
-RTMP and RTMPS will only be compatible only with H264 and AAC.
 
-HLS will have no prefix, HLS relies on HTTP/HTTPS and it is not the only one in this case. Since it has no prefix, HLS is not be auto-detectable in the custom field.
+- HLS relies on HTTP/HTTPS and it is not the only existing protocol in this case. This protocol has no unique URL prefixes.
 
-HLS, SRT, and RIST are codec agnostic since they use MPEG/TS container but require some set up depending on the codec.
-
-FTL will only be compatible only with H264 and Opus because of the deprecation of the protocol in OBS Studio.
+- Because of the deprecation of the protocol, FTL will not have a URL prefix asign to its output to not make it available through custom server in the UI.
 
 ## Services API
 Since a streaming service may not accept all the codecs usable by a protocol, adding a way to set supported codecs is required.
