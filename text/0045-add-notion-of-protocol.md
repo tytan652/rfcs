@@ -35,11 +35,9 @@ Adding to this API these functions:
 - `const char *obs_get_output_supported_video_codecs(const char *id)`: return compatible video codecs of the given output id.
 - `const char *obs_get_output_supported_audio_codecs(const char *id)`: return compatible audio codecs of the given output id.
 
-### About protocols
+### About HLS (or any protocol relying on HTTP)
 
-- HLS relies on HTTP/HTTPS and it is not the only existing protocol in this case. This protocol has no unique URL prefixes.
-
-- Because of the deprecation of the protocol, FTL will not have a URL prefix asign to its output to not make it available through custom server in the UI.
+HLS relies on HTTP/HTTPS and it is not the only existing protocol in this case. This protocol has no unique URL prefixes.
 
 ## Services API
 Since a streaming service may not accept all the codecs usable by a protocol, adding a way to set supported codecs is required.
