@@ -21,7 +21,8 @@ Adding to `obs_output_info`:
   - Each URL prefix must be unique to the protocol
   - Meant to be used for protocol auto-detection on server URL.
   - While registering if present, the number of URL prefix must be less or equal to the number of protocols.
-  - NOTE: URL prefixes (URI scheme + `://`) are prefered over URI schemes to avoid:
+  - NOTE: This field is optional because not every protocol has a unique prefix.
+  - NOTE 2: URL prefixes (URI scheme + `://`) are prefered over URI schemes to avoid:
     - matching links without prefixes (e.g. "rtmp.example.com").
     - adding `://` each time that a auto-detection is done.
 
