@@ -29,7 +29,8 @@ Adding to `obs_output_info`:
 Adding to this API these functions:
 - `const char *obs_output_get_protocols(const obs_output_t *output)`: returns protocols supported by the output.
 - `bool obs_output_is_protocol_registered(const char *protocol)`: return true if an output with the protocol is registered.
-- `const char *obs_output_get_prefix_protocol(const char *prefix)`: return the protocol bound to the prefix.
+- `const char *obs_output_prefix_get_protocol(const char *prefix)`: return the protocol bound to the prefix.
+- `const char *obs_output_protocol_get_prefix(const char *protocol)`: return the prefix bound to the protocol or `NULL` if none.
 - `bool obs_enum_output_service_types(const char *protocol, size_t idx, const char **id)`: enumerate all outputs types compatible with the given protocol.
 - `bool obs_enum_output_protocols_prefixes(size_t idx, const char **prefix)`: enumerate all registered URL prefixes.
 - `bool obs_enum_output_protocols(size_t idx, const char **prefix)`: enumerate all registered protocol.
