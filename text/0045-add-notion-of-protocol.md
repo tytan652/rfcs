@@ -62,24 +62,26 @@ Currently, `get_key` can provide a stream id (SRT) or an encryption passphrase (
 
 Rather than adding a getter for each possible type of information, a getter where we can choose which type of information we want should be implemented.
 
-Each type of connection details will be defined by a macro with an even number value. Odd number values will be reserved for potential third-party protocols (RFC 39).
+Types of connection details will be defined by an enum with only even number values. Odd number values will be reserved for potential third-party protocols (RFC 39).
 
 List of types:
 ```c
-#define OBS_SERVICE_INFO_SERVER_URL 0
-#define OBS_SERVICE_INFO_STREAM_KEY 2
-#define OBS_SERVICE_INFO_USERNAME 4 
-#define OBS_SERVICE_INFO_PASSWORD 6
-#define OBS_SERVICE_INFO_STREAM_ID 8
-#define OBS_SERVICE_INFO_ENCRYPT_PASSPHRASE 10
+enum obs_service_connect_info {
+	OBS_SERVICE_CONNECT_INFO_SERVER_URL = 0,
+	OBS_SERVICE_CONNECT_INFO_STREAM_KEY = 2,
+	OBS_SERVICE_CONNECT_INFO_USERNAME = 4,
+	OBS_SERVICE_CONNECT_INFO_PASSWORD = 6,
+	OBS_SERVICE_CONNECT_INFO_STREAM_ID = 8,
+	OBS_SERVICE_CONNECT_INFO_ENCRYPT_PASSPHRASE = 10,
+};
 ```
 
 Adding to `obs_service_info`:
-- `const char *(*get_connect_info)(uint32_t type, void *data)` where `type` is one of the value of the list above indicating which info we want and return `NULL` if it doesn't have it.
+- `const char *(*get_connect_info)(void *data, uint32_t type)` where `type` is one of the value of the list above indicating which info we want and return `NULL` if it doesn't have it.
 - `bool (*can_try_to_connect)(void *data)`, since protocols and services do not always require the same information. This function allows the service to return if it can connect. Return true if the the service has all it needs to connect.
 
 Adding these functions to the Services API:
-- `const char *obs_service_get_connect_info(uint32_t type, const obs_service_t *service)`: return the connection information related to the given type (list above).
+- `const char *obs_service_get_connect_info(const obs_service_t *service, uint32_t type)`: return the connection information related to the given type (list above).
 - `bool obs_service_can_try_to_connect(const obs_service_t *service)`: return if the service can try to connect.
   - return `bool (*can_try_to_connect)(void *data)` result.
   - return true if `bool (*can_try_to_connect)(void *data)` is not implemented in the service.
