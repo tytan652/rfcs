@@ -101,12 +101,12 @@ In the future, if we want to support a protocol that doesn't use a server URL, t
 #### About service JSON file
 
 - For `services` objects, a `"protocol"` field will be added. This will be used to indicate the protocol for services in situation where:
-  - The protocol can not be deduced from servers URL prefix.
-  - The services is RTMP but has a HTTP url as its server URL have custom code in the plugin will have the protocol field enforced to RTMP.
+  - The protocol can not be deduced from server's URL prefix.
+  - The service is RTMP but has an HTTP URL as its server URL and has custom code to request the true server URL in the plugin will have the protocol field enforced to RTMP.
 - Services that use a protocol that is not registered will not be shown. e.g. OBS Studio without RTMPS support will not show services and servers that rely on RTMPS.
 - Codecs field for audio and video will be added to allow services to limit which codec is compatible with the service.
-- `"output"` field in the `"recommended"` object will be deprecated, but it will be kept for backward compatibility. `const char *(*get_output_type)(void *data)` in `obs_service_info` will be no longer used by `rtmp-services`.
-  - The JSON schema will be modified to require the `"protocol"`field when the protocol is not auto-detectable. The same for the `"output"` field to keep backward compatibility.
+- `"output"` field in the `"recommended"` object will be deprecated, but it will be kept for backward compatibility. `const char *(*get_output_type)(void *data)` in `obs_service_info` will no longer be used by `rtmp-services`.
+  - The JSON schema will be modified to require the `"protocol"` field when the protocol is not auto-detectable. The same for the `"output"` field to keep backward compatibility.
 
 ## UI
 
