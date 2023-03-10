@@ -23,7 +23,7 @@ Adding to `obs_output_info`:
   - While registering if present, the number of URL prefix must be less or equal to the number of protocols.
   - NOTE: This field is optional because not every protocol has a unique prefix.
   - NOTE 2: URL prefixes (URI scheme + `://`) are prefered over URI schemes to avoid:
-    - matching links without prefixes (e.g. "rtmp.example.com").
+    - matching links without prefixes (e.g., "rtmp.example.com").
     - adding `://` each time that a auto-detection is done.
 
 Adding to this API these functions:
@@ -56,7 +56,7 @@ Adding to this API these functions:
 
 ### Services and connection informations
 
-Depending on the protocol, the service object should provide various types of connection details (e.g. server URL, stream key, username, password).
+Depending on the protocol, the service object should provide various types of connection details (e.g., server URL, stream key, username, password).
 
 Currently, `get_key` can provide a stream id (SRT) or an encryption passphrase (RIST) rather than a stream key.
 
