@@ -93,7 +93,7 @@ In the future, if we want to support a protocol that doesn't use a server URL, t
 
 ### About `rtmp-services`
 
-`rtmp-services` is a plugin that provides two services `rtmp_common` and `rtmp_custom`. The use of "rtmp" in the naming no longer means that it only supports RTMP, it was and is kept to avoid breakage.
+`rtmp-services` is a plugin that provides two services `rtmp_common` and `rtmp_custom`. The use of "rtmp" in these three terms no longer means that it only supports RTMP, it was and is kept to avoid breakage.
 
 - In `rtmp_common`, services must at least support H264 as video codec and AAC or Opus as audio codec. This is a limitation required by the simple output mode.
 - The service `rtmp_custom` will depend on protocol prefixes from outputs types to detect which protocol is in use.
@@ -134,7 +134,7 @@ If changing the service results in the selected protocol changing, the Output pa
 
 If the currently selected encoder (codec) is not supported by the service, the encoder will be changed and the user will be notified about the change.
 
-## What if there are various registered outputs for one protocol ?
+## What if there are various registered outputs for one protocol?
 
 The improbable situation where a plugin register a output for an already registered protocol could happen, so managing this possibility is required.
 
