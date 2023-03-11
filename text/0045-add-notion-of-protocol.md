@@ -90,6 +90,11 @@ In the future, if we want to support a protocol that doesn't use a server URL, t
 
 ## UI
 
+### About custom server
+
+The protocol of the custom server will be determined through the URI scheme (e.g., `rtmp`, `rtmps`, `ftl`, `srt`, `rist`) of the server URL and fallback to RTMP.
+Those checks will be hardcoded in the UI until RFC 39 replace custom server implementation.
+
 ### Audio encoders
 
 If the service/output is compatible with more than one audio codec, the user should be able to choose in the UI which one:
