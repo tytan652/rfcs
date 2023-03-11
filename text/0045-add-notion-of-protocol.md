@@ -15,31 +15,14 @@ Only outputs with the `OBS_OUTPUT_SERVICE` flag are concerned.
 
 Adding to `obs_output_info`:
 - `const char *protocols`: protocols separated with a semi-colon (ex: `"RTMP;RTMPS"`), required to register the output.
-- `const char *protocols_prefixes`: URL protocols prefixes separated with a semi-colon `"rtmp://;rtmps://"`, optional.
-  - Up to one URL prefix per protocol in `protocols`.
-  - Those URL prefixes must be in the same order as `protocols`.
-  - Each URL prefix must be unique to the protocol
-  - Meant to be used for protocol auto-detection on server URL.
-  - While registering if present, the number of URL prefix must be less or equal to the number of protocols.
-  - NOTE: This field is optional because not every protocol has a unique prefix.
-  - NOTE 2: URL prefixes (URI scheme + `://`) are prefered over URI schemes to avoid:
-    - matching links without prefixes (e.g., "rtmp.example.com").
-    - adding `://` each time that a auto-detection is done.
 
 Adding to this API these functions:
 - `const char *obs_output_get_protocols(const obs_output_t *output)`: returns protocols supported by the output.
 - `bool obs_output_is_protocol_registered(const char *protocol)`: return true if an output with the protocol is registered.
-- `const char *obs_output_prefix_get_protocol(const char *prefix)`: return the protocol bound to the prefix.
-- `const char *obs_output_protocol_get_prefix(const char *protocol)`: return the prefix bound to the protocol or `NULL` if none.
 - `bool obs_enum_output_service_types(const char *protocol, size_t idx, const char **id)`: enumerate all outputs types compatible with the given protocol.
-- `bool obs_enum_output_protocols_prefixes(size_t idx, const char **prefix)`: enumerate all registered URL prefixes.
-- `bool obs_enum_output_protocols(size_t idx, const char **prefix)`: enumerate all registered protocol.
+- `bool obs_enum_output_protocols(size_t idx, const char **protocol)`: enumerate all registered protocol.
 - `const char *obs_get_output_supported_video_codecs(const char *id)`: return compatible video codecs of the given output id.
 - `const char *obs_get_output_supported_audio_codecs(const char *id)`: return compatible audio codecs of the given output id.
-
-### About HLS (or any protocol relying on HTTP)
-
-HLS relies on HTTP/HTTPS and it is not the only existing protocol in this case. This protocol has no unique URL prefixes.
 
 ## Services API
 Since a streaming service may not accept all the codecs usable by a protocol, adding a way to set supported codecs is required.
@@ -96,25 +79,16 @@ In the future, if we want to support a protocol that doesn't use a server URL, t
 `rtmp-services` is a plugin that provides two services `rtmp_common` and `rtmp_custom`. The use of "rtmp" in these three terms no longer means that it only supports RTMP, it was and is kept to avoid breakage.
 
 - In `rtmp_common`, services must at least support H264 as video codec and AAC or Opus as audio codec. This is a limitation required by the simple output mode.
-- The service `rtmp_custom` will depend on protocol prefixes from outputs types to detect which protocol is in use.
 
 #### About service JSON file
 
-- For `services` objects, a `"protocol"` field will be added. This will be used to indicate the protocol for services in situation where one of these is true:
-  - The protocol can not be deduced from server's URL prefix.
-  - The service is RTMP but has an HTTP URL as its server URL and it has custom code to request the true server URL through an API in the plugin. In this case the protocol will be enforced to the right protocol (e.g., Dacast, YouNow).
+- For `services` objects, a `"protocol"` field will be added. This will be used to indicate the protocol for services.
 - Services that use a protocol that is not registered will not be shown. For example, OBS Studio without RTMPS support will not show services and servers that rely on RTMPS.
 - Codecs field for audio and video will be added to allow services to limit which codec is compatible with the service.
 - `"output"` field in the `"recommended"` object will be deprecated, but it will be kept for backward compatibility. `const char *(*get_output_type)(void *data)` in `obs_service_info` will no longer be used by `rtmp-services`.
   - The JSON schema will be modified to require the `"protocol"` field when the protocol is not auto-detectable. The same for the `"output"` field to keep backward compatibility.
 
 ## UI
-
-### Custom server protocol auto-detection
-
-The user can set a custom server through the service "Custom…", the protocol will be deduced based on URL prefixes from service outputs and default to RTMP if no matches.
-
-NOTE: Allowing the user to manually choose the protocol (e.g., HLS) is part of RFC 39.
 
 ### Audio encoders
 
