@@ -79,10 +79,12 @@ In the future, if we want to support a protocol that doesn't use a server URL, t
 `rtmp-services` is a plugin that provides two services `rtmp_common` and `rtmp_custom`. The use of "rtmp" in these three terms no longer means that it only supports RTMP, it was and is kept to avoid breakage.
 
 - In `rtmp_common`, services must at least support H264 as video codec and AAC or Opus as audio codec. This is a limitation required by the simple output mode.
+- NOTE: Some service provides RTMP and RTMPS which force the plugin to check the URI scheme to return the right protocol in this situation.
 
 #### About service JSON file
 
 - For `services` objects, a `"protocol"` field will be added. This will be used to indicate the protocol for services.
+ - The field is required if server URLs are not RTMP(s) (`rtmp://`, `rtmps://`).
 - Services that use a protocol that is not registered will not be shown. For example, OBS Studio without RTMPS support will not show services and servers that rely on RTMPS.
 - Codecs field for audio and video will be added to allow services to limit which codec is compatible with the service.
 - `"output"` field in the `"recommended"` object will be deprecated, but it will be kept for backward compatibility. `const char *(*get_output_type)(void *data)` in `obs_service_info` will no longer be used by `rtmp-services`.
