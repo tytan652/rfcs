@@ -18,7 +18,7 @@ Adding to `obs_output_info`:
 
 Adding to this API these functions:
 - `const char *obs_output_get_protocols(const obs_output_t *output)`: returns protocols supported by the output.
-- `bool obs_output_is_protocol_registered(const char *protocol)`: return true if an output with the protocol is registered.
+- `bool obs_is_output_protocol_registered(const char *protocol)`: return true if an output with the protocol is registered.
 - `bool obs_enum_output_service_types(const char *protocol, size_t idx, const char **id)`: enumerate all outputs types compatible with the given protocol.
 - `bool obs_enum_output_protocols(size_t idx, const char **protocol)`: enumerate all registered protocol.
 - `const char *obs_get_output_supported_video_codecs(const char *id)`: return compatible video codecs of the given output id.
