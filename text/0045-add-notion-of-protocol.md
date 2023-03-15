@@ -14,7 +14,7 @@ Create a better management of outputs, encoders, and services with an approach f
 Only outputs with the `OBS_OUTPUT_SERVICE` flag are concerned.
 
 Adding to `obs_output_info`:
-- `const char *protocols`: protocols separated with a semi-colon (ex: `"RTMP;RTMPS"`), required to register the output.
+- `const char *protocols`: protocols separated with a semi-colon (ex: `"RTMP;RTMPS"`), required to register the output. The string used to identify the protocol must be its officialy/widely used acronym, those acronyms are usually uppercased.
 
 Adding to this API these functions:
 - `const char *obs_output_get_protocols(const obs_output_t *output)`: returns protocols supported by the output.
