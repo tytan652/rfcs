@@ -51,13 +51,15 @@ List of types:
 ```c
 enum obs_service_connect_info {
 	OBS_SERVICE_CONNECT_INFO_SERVER_URL = 0,
+	OBS_SERVICE_CONNECT_INFO_STREAM_ID = 2,
 	OBS_SERVICE_CONNECT_INFO_STREAM_KEY = 2,
 	OBS_SERVICE_CONNECT_INFO_USERNAME = 4,
 	OBS_SERVICE_CONNECT_INFO_PASSWORD = 6,
-	OBS_SERVICE_CONNECT_INFO_STREAM_ID = 8,
-	OBS_SERVICE_CONNECT_INFO_ENCRYPT_PASSPHRASE = 10,
+	OBS_SERVICE_CONNECT_INFO_ENCRYPT_PASSPHRASE = 8,
 };
 ```
+
+Note: `OBS_SERVICE_CONNECT_INFO_STREAM_ID` is an alias of `OBS_SERVICE_CONNECT_INFO_STREAM_KEY` since they are technically the same. It was done to avoid confusion by forcing only one naming.
 
 Adding to `obs_service_info`:
 - `const char *(*get_connect_info)(void *data, uint32_t type)` where `type` is one of the value of the list above indicating which info we want and return `NULL` if it doesn't have it.
