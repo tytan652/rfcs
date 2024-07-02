@@ -87,6 +87,7 @@ The order of some steps is not definitive.
 
 ## Settings UI
 Many elements of the settings UI related to services will be moved inside service properties view like:
+
 - Stream key field
 - Username and password fields
 - OAuth connect disconnect button
@@ -101,7 +102,7 @@ If there multiple streaming output type available for the same protocol, this wi
 
 The service output settings (if any) will be saved as a JSON string in the profile config file.
 
-Advanced network settings will also be replaced by this new properties view, since those were meant for `"rtmp_output"` (RTMP(S) output).
+Advanced network settings will also be replaced by this new properties view, since those were only meant for `"rtmp_output"` (RTMP(S) output).
 
 ## Front-end API
 Those functions will be modified:
@@ -109,7 +110,52 @@ Those functions will be modified:
 - `obs_frontend_set_streaming_service()` because while the output selection is done in the settings windows and is no longer done while the stream is starting. The API will swap in a opinionated way the output if the service and the actual output protocols do not match.
 - `obs_frontend_save_streaming_service()` will save service output settings.
 
-## WIP
+## Services
+### API
+Adding to `obs_service_info`:
+
+  - `uint32_t flags` with the following flags:
+    - `OBS_SERVICE_DEPRECATED`: The service is marked as deprecated.
+    - `OBS_SERVICE_INTERNAL`: The service is meant to be used internally in some plugin (e.g., WebSocket, Scripting) and usually not directly exposed in the UI.
+    - `OBS_SERVICE_UNCOMMON`: The service can be hidden behind a "Show All/More" option UI/UX-wise.
+  - `const char *supported_protocols`: Protocol supported by the service.
+  - `enum obs_service_audio_track_cap (*get_audio_track_cap)(void *data)`: Returns the service audio track capability with the following possible values:
+    - `OBS_SERVICE_AUDIO_SINGLE_TRACK` - Only a single audio track is used by the service
+    - `OBS_SERVICE_AUDIO_ARCHIVE_TRACK` - A second audio track is accepted and is meant to become the archive/VOD audio
+    - `OBS_SERVICE_AUDIO_MULTI_TRACK` - Supports multiple audio tracks
+  - `void (*get_defaults2)(void *type_data, obs_data_t *settings)`: Same as its non-2 variant but give access to the `type_data` pointer.
+  - `obs_properties_t *(*get_properties2)(void *data, void *type_data)`: Same as its non-2 variant but give access to the `type_data` pointer.
+  - `bool (*can_bandwidth_test)(void *data)`: Return if the service is able to do bandwidth test, there is situations were a service is not always able to do it (e.g. the YouTube integration only does when an is account connected)
+  - `void (*enable_bandwidth_test)(void *data, bool enabled)`: Enable bandwidth test on the service (TODO: Error pointer)
+  - `bool (*bandwidth_test_enabled)(void *data)`: Return if the service has the bandwidth test enabled
+  - `void (*get_supported_resolutions2)(void *data, struct obs_service_resolution **resolutions,size_t *count, bool *with_fps)`: Replace its non-two variant to enable framerate value
+  - `int (*get_max_video_bitrate)(void *data, const char *codec struct obs_service_resolution resolution)`: Return a maximum bitrate based on a video codec and a resolution
+  - `int (*get_max_codec_bitrate)(void *data, const char *codec)`: Return a maximum bitrate for a specific codec
+  - `void (*apply_encoder_settings2)(void *data, const char *encoder_id, obs_data_t *encoder_settings)`: Replace its non-two variant to enable settings per encoder id and codec
+
+Adding to the Services API:
+
+  - `enum obs_service_audio_track_cap obs_service_get_audio_track_cap(const obs_service_t *service)`: Returns the service audio track capability with the following possible values:
+    - `OBS_SERVICE_AUDIO_SINGLE_TRACK` - Only a single audio track is used by the service
+    - `OBS_SERVICE_AUDIO_ARCHIVE_TRACK` - A second audio track is accepted and is meant to become the archive/VOD audio
+    - `OBS_SERVICE_AUDIO_MULTI_TRACK` - Supports multiple audio tracks
+  - `uint32_t obs_get_service_flags(const char *id)` and `uint32_t obs_service_get_flags(const obs_service_t *service)`: Return services flags
+  - `const char *obs_get_service_supported_protocols(const char *id)`: Return all protocols that the service can support
+  - `bool obs_service_can_bandwidth_test(const obs_service_t *service)`: Return if the service has bandwidth test capability
+  - `void obs_service_enable_bandwidth_test(const obs_service_t *service, bool enabled)`: Enable/disable the service bandwidth test
+  - `bool obs_service_bandwidth_test_enabled(const obs_service_t *service)`; Return if the service bandwidth test is enabled
+  - `int obs_service_get_max_codec_bitrate(const obs_service_t *service, const char *codec)`: Return the maximum bitrate supported by the service depending on the codec
+  - `void obs_service_get_supported_resolutions2( const obs_service_t *service, struct obs_service_resolution **resolutions, size_t *count, bool *with_fps)`: Return resolutions  supported by the service with optional framerate
+  - `int obs_service_get_max_video_bitrate(const obs_service_t *service, const char *codec, struct obs_service_resolution resolution)`: Return the maximum bitrate supported by the service depending on the codec and a resolution
+  - `void obs_service_apply_encoder_settings2(obs_service_t *service, const char *encoder_id, obs_data_t *encoder_settings)`: Apply encoder settings for a specific encoder id
+
+Deprecating in the Services API:
+
+  - `obs_service_apply_encoder_settings`: replaced by `obs_service_apply_encoder_settings2` to allow per encoder id/codec settings
+  - `obs_service_get_supported_resolutions`: replaced by `obs_service_get_supported_resolutions2` to enable returning framerate
+  - `obs_service_get_max_bitrate`: replaced by `obs_service_get_max_codec_bitrate` and  `obs_service_get_max_video_bitrate` for per codec (and resolution for the second) bitrate
+
+### Plugins
 
 # Drawbacks
 The overhaul will not be a 1:1 change, some features might not be portable to the more service-agnostic paradigm.
