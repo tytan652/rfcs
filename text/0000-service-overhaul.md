@@ -1,5 +1,4 @@
 # Summary
-
 - Make OBS able to accept third-party service plugins
 - Register services with a unique id rather than a common one
 - A service can be provided with multiple protocols
@@ -7,7 +6,6 @@
 - Forbid service-specific feature in the UI code
 
 # Motivation
-
 Actually even if OBS has the Service API, developer can't create third-party service plugin because there is no mechanism to use them at all.
 
 Before in OBS in the Stream settings page, property views were used for services but with only two registered services `rtmp_common` which contain all services and `rtmp_custom` for custom servers.
@@ -20,9 +18,7 @@ This need to be refactored to re-introduce property views for the service and fo
 This will also provide the ability for some stream services to be able to make their own plugin.
 
 # Design
-
 ## Dual code-path
-
 Like it was said in [Motivation](#motivation), various actors want to push their own features causing potential overhaul to be redone since the code base can be heavily changed by an actor's new feature.
 
 Blocking the actors does not seem like a possibility at all, so the overhaul needs to try to enable avoiding blocking them at the price that they might see they work re-done/worked later.
@@ -34,25 +30,21 @@ This only concerns the UI side of OBS Studio, libobs and plugins will not have t
 Since the pushed feature can cause re-basing issue in a one path, using a dual path could mitigate a little this issue.
 
 ### Original path
-
 This path will only receive isolation and API-based changes, most of the path will not change except if an actors push a change which will only affect this path.
 
 ### Experimental path
-
 In this path, features will implemented progressively since we do not directly replace the original path, this makes the overhaul more incremental.
 
-The output system, service management, settings windows and the auto-config wizard are the main components that will have a part of their code isolated to allow this path to be created.
+The output system, service management, settings windows and the auto-configuration wizard are the main components that will have a part of their code isolated to allow this path to be created.
 
 Note about previously mentioned actors, until the experimental path becomes the default/only path. If those actors happens to want to push changes to the experimental path, those changes, if not bug fixes, will be ignored as the path is experimental and not open for external contribution.
 
 ### How to select the path
-
 Until the experimental path can be considered to be defaulted to, the original path will always be used unless:
 1. The user add a custom option to opt-in to the experimental path.
 2. A menu option once the experimental is considered testable by a wider range of users.
 
 ## Pseudo-road-map
-
 This is road-map of potentials steps to implement the overhaul through the experimental path.
 
 The order of some steps is not definitive.
@@ -67,18 +59,20 @@ The order of some steps is not definitive.
 
 3. Re-implement service that have integration but without their integration
    - Integration will be progressively re-added in other steps
-   - Add Service APIs for multi-audio-track behavior
+   - Add Service API for multi-audio-track behavior
 
 50. Re-implement OAuth integration (except YouTube) without docks
 
 50. Implement service-agnostic "Broadcast Flow"
     - Re-implement YouTube integration without the docks
 
-50. Implement service-agnostic bandwidth test APIs
+50. Implement service-agnostic bandwidth test API
 
 70. Implement service-agnostic multi-video-track support
-    - Add Service APIs for multi-video-track behavior
+    - Add Service API for multi-video-track behavior
     - Twitch Enhanced Broadcast and WHIP Simulcast
+
+99. Re-implement Auto-Configuration Wizard streaming parts
 
 99. Re-implement browser docks for service integration
 
@@ -89,12 +83,41 @@ The order of some steps is not definitive.
 
 99. Make already existing service front-end API functional
 
+99. Implement settings migration from original path to experimental
+
+## Settings UI
+Many elements of the settings UI related to services will be moved inside service properties view like:
+- Stream key field
+- Username and password fields
+- OAuth connect disconnect button
+- Text with clickable link (e.g., YouTube integration links)
+- Maximum and recommended settings information
+- "Get Stream Key" button
+- "More Info" button
+
+The streaming output properties view will be shown below the service properties.
+
+If there multiple streaming output type available for the same protocol, this will be select-able through the settings windows.
+
+The service output settings (if any) will be saved as a JSON string in the profile config file.
+
+Advanced network settings will also be replaced by this new properties view, since those were meant for `"rtmp_output"` (RTMP(S) output).
+
+## Front-end API
+Those functions will be modified:
+
+- `obs_frontend_set_streaming_service()` because while the output selection is done in the settings windows and is no longer done while the stream is starting. The API will swap in a opinionated way the output if the service and the actual output protocols do not match.
+- `obs_frontend_save_streaming_service()` will save service output settings.
+
 ## WIP
 
 # Drawbacks
-
 The overhaul will not be a 1:1 change, some features might not be portable to the more service-agnostic paradigm.
 
 # Additional Information
-
 This is a re-write of [Service Overhaul #39](https://github.com/obsproject/rfcs/pull/39) trying to mitigate the lack of being to incrementally merge changes without causing regressions.
+
+Required addition for browser-based features:
+
+- https://github.com/obsproject/obs-browser/pull/431
+- https://github.com/obsproject/obs-studio/pull/10516
