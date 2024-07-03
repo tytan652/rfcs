@@ -123,8 +123,6 @@ Adding to `obs_service_info`:
     - `OBS_SERVICE_AUDIO_SINGLE_TRACK` - Only a single audio track is used by the service
     - `OBS_SERVICE_AUDIO_ARCHIVE_TRACK` - A second audio track is accepted and is meant to become the archive/VOD audio
     - `OBS_SERVICE_AUDIO_MULTI_TRACK` - Supports multiple audio tracks
-  - `void (*get_defaults2)(void *type_data, obs_data_t *settings)`: Same as its non-2 variant but give access to the `type_data` pointer.
-  - `obs_properties_t *(*get_properties2)(void *data, void *type_data)`: Same as its non-2 variant but give access to the `type_data` pointer.
   - `bool (*can_bandwidth_test)(void *data)`: Return if the service is able to do bandwidth test, there is situations were a service is not always able to do it (e.g. the YouTube integration only does when an is account connected)
   - `void (*enable_bandwidth_test)(void *data, bool enabled)`: Enable bandwidth test on the service (TODO: Error pointer)
   - `bool (*bandwidth_test_enabled)(void *data)`: Return if the service has the bandwidth test enabled
@@ -144,16 +142,16 @@ Adding to the Services API:
   - `bool obs_service_can_bandwidth_test(const obs_service_t *service)`: Return if the service has bandwidth test capability
   - `void obs_service_enable_bandwidth_test(const obs_service_t *service, bool enabled)`: Enable/disable the service bandwidth test
   - `bool obs_service_bandwidth_test_enabled(const obs_service_t *service)`; Return if the service bandwidth test is enabled
-  - `int obs_service_get_max_codec_bitrate(const obs_service_t *service, const char *codec)`: Return the maximum bitrate supported by the service depending on the codec
-  - `void obs_service_get_supported_resolutions2( const obs_service_t *service, struct obs_service_resolution **resolutions, size_t *count, bool *with_fps)`: Return resolutions  supported by the service with optional framerate
+  - `int obs_service_get_max_codec_bitrate(const obs_service_t *service, const char *codec)`: Return the maximum bit-rate supported by the service depending on the codec
+  - `void obs_service_get_supported_resolutions2( const obs_service_t *service, struct obs_service_resolution **resolutions, size_t *count, bool *with_fps)`: Return resolutions  supported by the service with optional frame-rate
   - `int obs_service_get_max_video_bitrate(const obs_service_t *service, const char *codec, struct obs_service_resolution resolution)`: Return the maximum bitrate supported by the service depending on the codec and a resolution
   - `void obs_service_apply_encoder_settings2(obs_service_t *service, const char *encoder_id, obs_data_t *encoder_settings)`: Apply encoder settings for a specific encoder id
 
 Deprecating in the Services API:
 
   - `obs_service_apply_encoder_settings`: replaced by `obs_service_apply_encoder_settings2` to allow per encoder id/codec settings
-  - `obs_service_get_supported_resolutions`: replaced by `obs_service_get_supported_resolutions2` to enable returning framerate
-  - `obs_service_get_max_bitrate`: replaced by `obs_service_get_max_codec_bitrate` and  `obs_service_get_max_video_bitrate` for per codec (and resolution for the second) bitrate
+  - `obs_service_get_supported_resolutions`: replaced by `obs_service_get_supported_resolutions2` to enable returning frame-rate
+  - `obs_service_get_max_bitrate`: replaced by `obs_service_get_max_codec_bitrate` and  `obs_service_get_max_video_bitrate` for per codec (and resolution for the second) bit-rate
 
 ### Plugins
 
