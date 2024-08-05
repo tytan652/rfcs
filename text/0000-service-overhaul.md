@@ -113,6 +113,9 @@ Those functions will be modified:
 
 ## Services
 ### API
+
+The following is subject to change.
+
 Adding to `obs_service_info`:
 
   - `uint32_t flags` with the following flags:
@@ -155,9 +158,35 @@ Deprecating in the Services API:
   - `obs_service_get_max_bitrate`: replaced by `obs_service_get_max_codec_bitrate` and  `obs_service_get_max_video_bitrate` for per codec (and resolution for the second) bit-rate
 
 ### Plugins
+#### `rtmp-services`
+
+Services provided by this plugin (`"rtmp_custom"`, `"rtmp_common"`) will be deprecated (`OBS_SERVICE_DEPRECATED` and `OBS_SERVICE_INTERNAL` applied) and completely unused in OBS Studio experimental path.
+
+Those are deprecated rather than completely removed to allow scripting and plugins to migrate if they happen to use them.
+
+Its service JSON will no longer be updated.
+
+This plugin will be replaced and its two services will be replaced by two plugins.
+
+#### `obs-webrtc`
+`"whip_custom"` will be deprecated (`OBS_SERVICE_DEPRECATED` and `OBS_SERVICE_INTERNAL` applied) and completely unused in OBS Studio experimental path.
+
+The service will be replaced by one implemented in another plugin to avoid co-dependency between the output and the service implementation.
+
+#### `custom-service`
+This plugin is meant to provide replacement to `"rtmp_custom"` and `"whip_custom"` and extend it to every protocol that OBS Studio support.
+
+#### `obs-services`
+This plugin is meant to provide a replacement for `"rtmp_common"` type for services who don't rely on custom behavior nor integration.
+
+Each service will be registered with its own id and not the same id for all services.
+
+This new plugin will be able to provide multi-protocol services so no more "Service - HLS" and "Service - RTMP".
 
 # Drawbacks
-The overhaul will not be a 1:1 change, some features might not be portable to the more service-agnostic paradigm.
+The overhaul will not be a 1:1 change, some features might not be portable as-is to the more service-agnostic paradigm.
+
+As an example, URI scheme detection will be completely dropped since not all protocol can have this applied (e.g., HLS and WHIP are both HTTP based and share same URI schemes).
 
 # Additional Information
 This is a re-write of [Service Overhaul #39](https://github.com/obsproject/rfcs/pull/39) trying to mitigate the lack of being able to incrementally merge changes without causing regressions.
