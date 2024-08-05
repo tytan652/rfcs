@@ -41,6 +41,7 @@ Note about previously mentioned actors, until the experimental path becomes the 
 
 ### How to select the path
 Until the experimental path can be considered to be defaulted to, the original path will always be used unless:
+
 1. The user add a custom option to opt-in to the experimental path.
 2. A menu option once the experimental is considered testable by a wider range of users.
 
@@ -159,7 +160,7 @@ Deprecating in the Services API:
 The overhaul will not be a 1:1 change, some features might not be portable to the more service-agnostic paradigm.
 
 # Additional Information
-This is a re-write of [Service Overhaul #39](https://github.com/obsproject/rfcs/pull/39) trying to mitigate the lack of being to incrementally merge changes without causing regressions.
+This is a re-write of [Service Overhaul #39](https://github.com/obsproject/rfcs/pull/39) trying to mitigate the lack of being able to incrementally merge changes without causing regressions.
 
 Required addition for browser-based features:
 
